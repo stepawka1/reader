@@ -1,0 +1,10 @@
+.invisible {
+	display: none;
+}
+
+p {
+	font-family: 'Verdana';
+	font-size: 12px;
+	text-indent: 1.5em; /* Отступ первой строки */
+    text-align: justify; 
+}
