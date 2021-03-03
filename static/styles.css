@@ -1,10 +1,157 @@
+
+
 .invisible {
-	display: none;
+  display: none;
+}
+*,
+*::after,
+*::before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+#mainmenu {
+    background: #444;
+    position: relative;
+    overflow: hidden;
+    height: 50px;
+    width: 100%;
+    position: fixed;
+
+    
+}
+#mainmenu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    left: 50%;
+    float: left;
+    font: 14px Arial, Helvetica, sans-serif;
+    height: 40px
+}
+#mainmenu ul li {
+    position: relative;
+    left: -50%;
+    float: left;
+    margin: 0 10px;
+    height: 40px
+}
+#mainmenu ul li a {
+    color: #fff;
+    display: block;
+    text-decoration: none;
+    padding: 0 15px;
+    line-height: 50px;
+}
+#mainmenu ul li a:hover {
+    background-color: #666;
 }
 
-p {
-	font-family: 'Verdana';
-	font-size: 12px;
-	text-indent: 1.5em; /* Отступ первой строки */
-    text-align: justify; 
+.main {
+  padding-top: 50px;
+
 }
+
+.libary {
+  overflow: hidden;
+
+}
+
+.book-wrapper{
+  margin-top: 30px;
+
+  height: 500px;
+  width: 285px;
+  display: inline-block;
+  margin: 0 auto;
+  margin-right: auto;
+  margin-left: 40px;
+  margin-top: 10px;
+  border: 1px groove black;
+}
+
+.book-wrapper img {
+  height: 400px;
+  width: 283px;
+}
+.book-wrapper p {
+  line-height: 40px;
+  font-size: 18px;
+  width: 285px;
+  text-align: center;
+}
+.title {
+  font-style: italic;
+}
+
+.libary h1 {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 30px;
+}
+
+.auth-main {
+  margin: 0 auto;
+  margin-top:100px;
+  background-color: #666;
+    width: 500px;
+    border: 1px solid blue;
+    display: flex;
+    justify-content: center; /*Центрирование по горизонтали*/
+    height: 700px;
+    flex-direction: column;
+    color: white;
+}
+
+.auth-main p{
+  text-align: center;
+
+
+}
+
+.main {
+     
+      
+  
+
+}
+.auth {
+  margin-top: 0px;
+  position: absolute;
+      left: 0;
+      background-image: url('img/auth.jpg');
+  background-repeat: no-repeat;
+    max-height:100%;
+    max-width:100%;
+    height: 100%;
+    width: 100%;
+}
+.google {
+    display: inline-block;
+    margin-top:200px;
+}
+
+
+
+  .loader03 {
+  width: 56px;
+  height: 56px;
+  border: 8px solid transparent;
+  border-top-color: #0052ec;
+  border-bottom-color: #0052ec;
+  border-radius: 50%;
+  position: relative;
+  animation: loader-rotate 1s linear infinite;
+  top: 400px;
+  margin: 0 auto 0; }
+
+@keyframes loader-rotate {
+  0% {
+    transform: rotate(0); }
+  100% {
+    transform: rotate(360deg); } }
