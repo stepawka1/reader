@@ -6,17 +6,21 @@
 	<link rel="stylesheet" type="text/css" href="static/styles.css">
 	<script type="text/javascript" src = 'static/script.js'></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+	<link rel="stylesheet" href="static/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
+
 	<div id="mainmenu">
 	    <ul>
 	        <li><a id = 'googlePicker'>Каталог</a></li>
 	        <li ><a>Настройка</a></li>
-	        <li><a onclick='doStopper()'>Оставить закладку</a></li>
+	        <li class = 'invisible'><a >Оглавление</a></li>
+	        <li><a onclick='doStopper()'>Закладки</a></li>
 	        <li><a id = 'googleDriveOff'>Выйти</a></li>
-	        
 	    </ul>
 	  </div>
+
+	  <div class = 'invisible' id = 'read_line'> </div>
 	  <div class="item invisible" id = 'loader'>
 				
 				<div class="loader03"></div>
@@ -39,6 +43,10 @@
 		</div>
 	</div>
 	<div class = 'main' id = 'main'>
+		<div id = 'sort_menu'> 
+	  		<i class="fa fa-list fa-2x" onclick="show_mode2()"  aria-hidden="true"></i> 
+	        <i class="fa fa-picture-o fa-2x" aria-hidden="true" onclick="show_mode1()"></i>
+	  </div>
 		<!-- <ul class="menu-main">
 		  <li><p>Work</p></li>
 		  <li><p>About</p></li>
@@ -60,8 +68,12 @@
 		<ul class="libary invisible" id='libary'>
 			<h1>Ваши книги</h1>
 		</ul>
-		<div  class = 'invisible book-field'> </div>
+		<div  class = 'invisible book-field'>
+
+		</div>
 	</div>
 	<script type="text/javascript" src ='https://apis.google.com/js/api.js?onload=onApiLoad' ></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 </body>
 </html>
