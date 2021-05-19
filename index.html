@@ -4,7 +4,11 @@
 <head>
 	<title>Project</title>
 	<link rel="stylesheet" type="text/css" href="static/styles.css">
+	<script type="text/javascript" src = 'static/styles.js'></script>
 	<script type="text/javascript" src = 'static/script.js'></script>
+	<script type="text/javascript" src = 'static/google.js'></script>
+	<script type="text/javascript" src = 'static/Dropbox.js'></script>
+	<script type="text/javascript" src = 'static/yandex.js'></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
 	<link rel="stylesheet" href="static/font-awesome/css/font-awesome.min.css">
 </head>
@@ -12,11 +16,11 @@
 
 	<div id="mainmenu">
 	    <ul>
-	        <li><a id = 'googlePicker'>Каталог</a></li>
-	        <li ><a>Настройка</a></li>
-	        <li class = 'invisible'><a >Оглавление</a></li>
-	        <li><a onclick='doStopper()'>Закладки</a></li>
+	        <li><a id = 'googlePicker' onclick='show_main()' >Каталог</a></li>
+	        <li ><a onclick='show_settings()'>Настройка</a></li>
+	        <li onclick="active_cursor()"><a id = 'translate_page'>Другая версия книги</a></li>
 	        <li><a id = 'googleDriveOff'>Выйти</a></li>
+	        <li onclick="show_book_info()"> <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i> </li>
 	    </ul>
 	  </div>
 
@@ -30,8 +34,9 @@
 			<div class = 'auth-main'>
 				<p>Добро пожаловать
 				<br>Здесь вы можете читать</p>
-				<div class="col s12 m6 offset-m3 center-align google" i>
-				    <a class="oauth-container btn darken-4 white black-text"  style="text-transform:none" id = 'googleDrive'>
+
+				<div class="col s12 m6 offset-m3 center-align google">
+				    <a class="oauth-container btn darken-4 white black-text"  style="text-transform:none; margin-top: 200px;" id = 'googleDrive'>
 				        <div class="left">
 				            <img width="20px" style="margin-top:7px; margin-right:8px" alt="Google sign-in" 
 				                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
@@ -39,14 +44,89 @@
 				        Login with Google
 				    </a>
 				</div>
+				<div class="col s12 m6 offset-m3 center-align dropbox">
+				    <a class="oauth-container btn darken-4 white black-text"  style="text-transform:none" id = 'dropBox' href="https://www.dropbox.com/oauth2/authorize?client_id=42e6d76s4q98qf1&redirect_uri=http://localhost:3000/&response_type=code&">
+				        <div class="left">
+				            <img width="20px" style="margin-top:7px; margin-right:8px" alt="Google sign-in" 
+				                src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Dropbox_Icon.svg/640px-Dropbox_Icon.svg.png" />
+				        </div>
+				        Login with DropBox
+				    </a>
+				</div>
+				<div class="col s12 m6 offset-m3 center-align yandex">
+				    <a class="oauth-container btn darken-4 white black-text"  style="text-transform:none" id = 'dropBox' href="https://oauth.yandex.ru/authorize?response_type=code&client_id=50e4c045cf91424d89bab8c634df41d5">
+				        <div class="left">
+				            <img width="20px" style="margin-top:7px; margin-right:8px" alt="Google sign-in" 
+				                src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/YandexDisk.png/640px-YandexDisk.png" />
+				        </div>
+				        Login with Yandex
+				    </a>
+				</div>
+
+				 
 			</div>
 		</div>
 	</div>
+	<div id = 'settings' class = 'invisible'>
+		<div id = 'example'> 
+			<div id = 'text'>
+
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+				consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+				cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+				consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+				cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			 </div>
+		</div>
+		<div id = 'changer'>
+		 	<div id ='changer_settings'>
+		 		<ul class = 'drop-down'>
+					<li class = 'show_drop_down'> Выбрать тему <i class="fa fa-arrow-down" aria-hidden="true"></i> </li>
+					<li class = 'selector_white_theme'>Светлая</li>
+					<li class = 'selector_dark_theme'>Темная</li>
+					<li class = 'selector_beige_theme'>Бежевая</li>
+				</ul>
+				<ul class = 'drop-down'>
+					<li class = 'show_drop_down'> Выбрать межстрочный интервал <i class="fa fa-arrow-down" aria-hidden="true"></i>  </li>
+					<li>1.2</li>
+					<li>1.4</li>
+					<li>1.6</li>
+					<li>1.8</li>
+					<li>2.0</li>  
+				</ul>
+				<ul class = 'drop-down'>
+					<li class = 'show_drop_down'> Выбрать размер шрифта  <i class="fa fa-arrow-down" aria-hidden="true"></i> </li>
+					<li>10</li>
+					<li>12</li>
+					<li>14</li>
+					<li>16</li>
+					<li>18</li>
+					<li>20</li>
+				</ul>
+				<ul class = 'drop-down'>
+					<li class = 'show_drop_down'> Выбрать шрифт  <i class="fa fa-arrow-down" aria-hidden="true"></i> </li>
+					<li style="font-family:'Roboto', sans-serif;">Robot</li>
+					<li style="font-family: 'Open Sans', sans-serif;">Open Sans</li>
+					<li style="font-family: 'Montserrat', sans-serif;">Montserrat</li>
+					<li style="font-family: 'Noto Sans', sans-serif;">Noto Sans</li>
+				</ul>
+				<div id ='apply changes'>
+		 			<button onclick="save_custom()">Сохранить</button>
+		 		</div>
+
+			 </div>
+			
+		</div> 
+	</div>
 	<div class = 'main' id = 'main'>
-		<div id = 'sort_menu'> 
-	  		<i class="fa fa-list fa-2x" onclick="show_mode2()"  aria-hidden="true"></i> 
-	        <i class="fa fa-picture-o fa-2x" aria-hidden="true" onclick="show_mode1()"></i>
-	  </div>
+		
 		<!-- <ul class="menu-main">
 		  <li><p>Work</p></li>
 		  <li><p>About</p></li>
@@ -54,26 +134,48 @@
 		  <li><p onclick='doStopper()'>Сделать закладку</p></li>
 		</ul> -->
 		<!-- <div id = 'googlePicker'> Выбрать книгу </div> -->
-		<div class = 'auth-menu'>
-			<!--<div class = 'social-webs'>
-				<div class = 'google social' id = 'googleDrive'> Гугл </div> 
-			</div> -->
-			<!-- <div class = 'singout btn' id = 'googleDriveOff'>
-				выйти
-			</div> -->
-		</div>
 		<div id = 'folder_error' class = 'alert invisible'> u have to add folder with name "books" to your google drive </div>
 		<div class = 'invisible' id = 'folder_error_button'> press here if u hava added folder</div>
 		<div class = 'invisible' id = 'list_of_books'> </div>
 		<ul class="libary invisible" id='libary'>
-			<h1>Ваши книги</h1>
-		</ul>
-		<div  class = 'invisible book-field'>
+			<h1>Ваши книги </h1> 
 
+			<ul class = 'drop-down' id = 'sort'>
+					<li class = 'show_drop_down' > Сортировать по </li>
+					<li>По автору</li>
+					<li>По названию</li>
+					<li>По дате добавления</li>
+				</ul>
+			<div id = 'sort_menu'> 
+				
+		  		<i class="fa fa-list fa-2x" onclick="show_mode2()"  aria-hidden="true"></i> 
+		        <i class="fa fa-picture-o fa-2x" aria-hidden="true" onclick="show_mode1()"></i>
+		  	</div>
+
+		</ul>
+		<div class = 'show_book invisible'>
+			<div class="change_page arrow-left" onclick="prev_page()"> 
+				<i class="fa fa-angle-left fa-3x" aria-hidden="true" ></i> 
+			</div>
+			<div class = 'change_page arrow-right' onclick="next_page()">
+				<i class="fa fa-angle-right fa-3x" aria-hidden="true" ></i> 
+			</div>
+			<div  class = 'book-field'>
+			</div>
+			<p id = 'page_number'> Страница  <nobr id = 'cur_page'> 1  </nobr> из <nobr id = 'total_pages'> </nobr></p>
 		</div>
 	</div>
+
+	<div id = 'book_info' class="invisible" > 
+		<h1> Информация</h1>
+		<label>Добавить другую версию книги</label>
+		<ul class="drop-down" id="anoter_book_version"><li class="show_drop_down" id="changer_dropdown" value ='asdsad'> Выбрать книгу на другом языке <i class="fa fa-arrow-down" aria-hidden="true"></i> </li></ul>
+
+	</div>
+	
 	<script type="text/javascript" src ='https://apis.google.com/js/api.js?onload=onApiLoad' ></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
+
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 </body>
 </html>
