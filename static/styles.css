@@ -1,19 +1,17 @@
-
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Noto+Sans&family=Open+Sans:ital,wght@1,300&family=Roboto:ital,wght@1,500&display=swap');
 .invisible {
+ /* position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip:rect(0 0 0 0);
+  overflow: hidden;
+*/
   display: none;
 }
-*,
-*::after,
-*::before {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -o-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+
 #mainmenu {
     background: #444;
     position: relative;
@@ -50,11 +48,20 @@
 }
 #mainmenu ul li a:hover {
     background-color: #666;
+    transition: 0.5s;
+}
+#mainmenu ul li:last-child {
+    color: white;
+    transition: 0.5s;
+    padding-top: 10px;
 }
 
 .main {
+  overflow:hidden;
   padding-top: 50px;
-
+  min-height: 100vh;
+  
+  word-break: normal; 
 }
 
 .libary {
@@ -64,12 +71,12 @@
 
 .book-wrapper{
   margin-top: 30px;
+overflow:hidden;
+  height: 600px;
 
-  height: 500px;
-  width: 285px;
   display: inline-block;
-  margin: 0 auto;
-  margin-right: auto;
+  margin-right: 80px;
+
   margin-left: 40px;
   margin-top: 10px;
   border: 1px groove black;
@@ -82,7 +89,7 @@
 .book-wrapper p {
   line-height: 40px;
   font-size: 18px;
-  width: 285px;
+  width: 283px;
   text-align: center;
 }
 .title {
@@ -114,12 +121,6 @@
 
 }
 
-.main {
-     
-      
-  
-
-}
 .auth {
   margin-top: 0px;
   position: absolute;
@@ -133,7 +134,16 @@
 }
 .google {
     display: inline-block;
-    margin-top:200px;
+}
+.dropbox {
+  margin-top: 5px;
+}
+.yandex {
+  margin-top: 5px;
+}
+
+.btn{
+  width: 200px;
 }
 
 
@@ -145,9 +155,10 @@
   border-top-color: #0052ec;
   border-bottom-color: #0052ec;
   border-radius: 50%;
-  position: relative;
+  position: absolute;
+  left:50%;
   animation: loader-rotate 1s linear infinite;
-  top: 400px;
+  top: 50%;
   margin: 0 auto 0; }
 
 @keyframes loader-rotate {
@@ -155,3 +166,310 @@
     transform: rotate(0); }
   100% {
     transform: rotate(360deg); } }
+
+
+#read_line {
+  width: 0%;
+  border: 3px solid yellow;
+  position: fixed;
+  top: 50px;
+
+}
+
+.book-field {
+  /*//119 - кайф*/
+    position: relative;
+    right:0px;
+    padding-right: 50px;
+    padding-left:  50px;
+    column-count: 2;
+    padding-top:  25px;
+    height: 80vh;
+    word-break: normal; 
+    column-width: 413.5px;
+    column-gap: 100px;
+
+}
+
+#sort_menu {
+  position: relative;
+  top:-50px;
+  right:30px;
+  float: right;
+
+}
+
+#sort{
+  position: absolute;
+  right: 120px;
+  top: 94px;
+
+}
+#sort {
+  width: 150px;
+  background-color: white;
+  text-align: center;
+}
+#sort li{
+  border-left: 1px solid red;
+}
+
+.selector_dark_theme #sort li:hover{
+  background-color: white;
+  color: black;
+  transition: all 0.5s ease;
+
+}
+.selector_dark_theme #sort {
+  background-color: white;
+  color: white;
+  transition: all 0.5s ease;
+  background-color: #2D2F34;
+
+}
+
+
+.drop-down li {
+    -webkit-user-select: none;
+  -moz-user-select: none;
+  margin-bottom: 5px;
+  display:none;
+
+}
+.drop-down li:first-child {
+  display: block;
+}
+
+
+
+
+.list {
+  display: block;
+
+}
+.list{
+  margin-top: 30px;
+  height: 100px;
+  justify-content: center;
+  border: 1px groove black;
+  vertical-align: middle
+}
+
+.list img {
+  height: 40px;
+  width: 28px;
+
+
+}
+.list p {
+  height: 100%;
+  text-align: center;
+  float: left;
+  font-size: 18px;
+  border: 1px groove green;
+  width: 40%;
+  margin: auto;
+
+
+}
+.list-img-wrapper {
+  width: 20%;
+  height: 100%;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#oglavlenie {
+  margin-top: 20px;
+
+  justify-content: center;
+}
+
+
+#example {
+    
+    width: 50%; 
+    height: 1000px;
+    overflow:auto;
+    float:left;
+    padding-top: 55px;
+    padding-top: 80px;
+    padding-right: 50px;
+    padding-left: 20px;
+}
+
+#changer {
+    width: 50%; 
+    height: 1000px;
+    overflow:auto;
+    padding-top: 55px;
+
+}
+
+#changer_settings {
+    margin-left: 40px;
+    margin-top: 50px;
+}
+
+#changer_settings h1{
+    font-size: 15px;
+}
+
+ 
+#country {
+    width: 100%;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f1f1f1;
+}
+
+#country {
+    width: 100%;
+    
+    padding: 16px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f1f1f1;
+}
+
+/*li,
+#menuTrigger:checked + ul {
+  display: block
+}
+
+ul ul,
+#menuTrigger {
+
+  display: none;
+}
+ul:click {
+    background-color: red;
+    height: 100px;
+    display: none;
+}
+*/
+
+
+
+.selector_dark_theme {
+    line-height:20px;
+    background-color: #2D2F34;
+    color: white;
+}
+.selector_beige_theme {
+    background-color: #deb887;
+    color: white;
+}
+
+.change_page {
+  z-index:10;
+  height: 80vh;
+  vertical-align: middle
+
+}
+
+.arrow-left {
+  position: absolute;
+  font-size: 20px;
+  vertical-align: middle;
+  left:0px;
+}
+.arrow-right {
+  position: absolute;
+  vertical-align: middle;
+  right:0px;
+}
+
+.fa-angle-left {
+  position: relative;
+  top:50%;
+  left:5px;
+}
+.fa-angle-right {
+  position: relative;
+  top:50%;
+  right: 5px;
+}
+
+.show_book{
+  width: 100%;
+}
+#page_number {
+  position: absolute;
+  left:43%;
+  bottom: 40px;
+  font-size: 20px;
+}
+#page_number div {
+    white-space: nowrap;
+}
+
+#changer ul li:not(:first-child){
+  margin-left:15px; 
+  width: 200px;
+  border: 1px solid black;
+  text-align: center;
+  transition: 1s;
+  
+}
+#changer ul:not(:first-child) li:not(:first-child){
+  background-color: #add8e6;
+  color: black;
+  font-style: bold;
+
+}
+
+.fa-arrow-down {
+  padding-top: 2px;
+}
+
+
+#book_info {
+  position: absolute;
+  top:50px;
+  width: 100%;
+  height: calc(100vh - 50px);
+  background-color: white;
+  z-index:20;
+}
+
+#book_info h1 {
+  text-align: center;
+  font-size:25px;
+}
+
+
+.social {display: inline-block;}
+.social a {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin: 0 10px 10px 0;
+  text-align: center;
+  color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.4), inset 1px 1px 0px rgba(255,255,255,0.5);
+}
+.social a:hover {
+  border-color: #888;
+  opacity: .8;
+}
+.social svg {
+  margin-top: 7px;
+  width: 32px;
+  height: 32px;
+}
+.dropbox a {background: #1087dd}
+
+.title i {
+  position: relative;
+  right: 0px;
+}
+
+
+.active{
+  background-color: #666;
+}

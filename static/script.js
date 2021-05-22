@@ -1,24 +1,28 @@
 
-const developerKey = 'AIzaSyB7ae05ZDWxcvkjzZFPpgjmoRFQ_C89ZQg';
-const clientId = '686887041548-hk26nfacbcflql93pk2nvikh9jv915sj.apps.googleusercontent.com';
-const scope =  
+const developerKey_google = 'AIzaSyB7ae05ZDWxcvkjzZFPpgjmoRFQ_C89ZQg';
+const clientId_google = '686887041548-hk26nfacbcflql93pk2nvikh9jv915sj.apps.googleusercontent.com';
+const scope =  'https://www.googleapis.com/auth/drive.file ' + 
                 'https://www.googleapis.com/auth/drive.readonly' 
                 ;
+const developerKey_dropbox = '42e6d76s4q98qf1';
+const clientId_dropbox = 'alys2n5xor27of2';
+
 let GoogleAuth;
 let access_token;
-
 var folder_id;
-
 var books_list = [];
-
+var settings = {};
+var service = '';
 
 class Book{
-    constructor(author, title, content, id){
+    constructor(author, title, content, id, time, img){
         this.author = author;
         this.title = title;
-        this.content = content;
         this.id = id;
-
+        this.content = content;
+        this.all_doc = content;
+        this.time = time;
+        this.img = img;
     }
     get(id){
         if (this.id === id)
@@ -26,19 +30,38 @@ class Book{
         return false;
     }
     show() {
+
+        let parser = new DOMParser();
+        let xmlDOM = parser.parseFromString(this.all_doc, 'application/xml');
+        this.content = xmlDOM.getElementsByTagName('body')[0].innerHTML;;
+        let titles = xmlDOM.getElementsByTagName('title');
+
+        this.header ='<div id="oglavlenie">';
+        for (var i = 0; i < titles.length; i++) {
+            this.header += '<a href=#'+i+'>' + titles[i].getElementsByTagName('p')[0].innerHTML +'</a><br>'
+            this.content = this.content.replace('<title','<h2 id ='+i+'');
+            this.content = this.content.replace('</title>','</h2>');
+        }
+       // console.log(content)
+        this.header +='</div id="oglavlenie">';
+        //console.log(this.header);
         var ul = document.getElementById('libary');
         ul.classList.add('invisible');
+        var book1 = document.getElementsByClassName('show_book')[0];
+        book1.classList.remove('invisible');
         var book = document.getElementsByClassName('book-field')[0];
+        var info_icon = document.getElementById('info_icon');
         book.classList.remove('invisible');
-        book.innerHTML = this.content;
+        book.innerHTML = this.header + this.content;
         book.id = this.id;
-        console.log(getCookie(this.id))
-        if(getCookie(this.id) === null) {
-            console.log(pageYOffset);
-        }
-        else {
-            window.scrollTo(0, getCookie(this.id))
-        }
+        info_icon.classList.remove('invisible');
+        //total_pages = document.getElementById('total_pages');
+        //var pages = Math.ceil(document.getElementsByClassName('book_field')[0].scrollWidth/document.offsetWidth);
+        //console.log(document.getElementsByClassName('book_field')[0].scrollWidth)
+        //total_pages.innerHTML = pages;
+        get_cur_page();
+        get_total_pages();
+        showReadLine()
 
     }
 
@@ -63,6 +86,8 @@ function onSingIn() {
 
 
 function onLogOut() {
+    deleteCookie('current_book');
+    deleteCookie('folder_id');
     const authBt = document.getElementById('googleDrive');
     const signOutBtn = document.getElementById('googleDriveOff');
     const pickerBtn = document.getElementById('googlePicker');
@@ -70,6 +95,13 @@ function onLogOut() {
     const auth_menu = document.getElementById('main-auth');
     const main = document.getElementById('main');
     const lab = document.getElementById('libary');
+    const book_field = document.getElementsByClassName('book-field')[0];
+    const load_circle = document.getElementById("loader");
+    const info = document.getElementById("book_info");
+    var info_icon = document.getElementById('info_icon');
+    info_icon.classList.add('invisible');
+    info.classList.add('invisible');
+    load_circle.classList.add('invisible');
     authBt.classList.remove('invisible');
     signOutBtn.classList.add('invisible');
     pickerBtn.classList.add('invisible');
@@ -77,43 +109,70 @@ function onLogOut() {
     auth_menu.classList.remove('invisible');
     main.classList.add('invisible');
     lab.classList.add('invisible');
+    deleteCookie('auth');
+    book_field.innerHTML = ' ';
+    book_field.id = '';
     var book = document.getElementsByClassName("book-wrapper");
-    for (var i = 0; i < book.length; i++) {
-        tmp = book[i];
-        tmp.remove();
+    while ((el = book[0])) {
+      el.parentNode.removeChild(el);
     }
+
+    books_list = [];
 
 }
 
-// ===== start function ===== //
-window.onApiLoad = function() {
-    if(getCookie('auth') !== null) {
+function show_settings() {
+    const main = document.getElementById('main');
+    main.classList.add('invisible');
+    const settings = document.getElementById('settings');
+    settings.classList.remove('invisible');
+    line = document.getElementById('read_line');
+    line.classList.add('invisible');
+    const info = document.getElementById("book_info");
+    info.classList.add('invisible');
 
+
+}
+function show_main() {
+    const main = document.getElementById('main');
+    main.classList.remove('invisible');
+    const settings = document.getElementById('settings');
+    settings.classList.add('invisible');
+    const info = document.getElementById("book_info");
+    info.classList.add('invisible');
+
+}
+
+
+window.onApiLoad = function() {
+    check_auth();
+    deleteCookie('current_book');
+    if(getCookie('auth')) {
         onSingIn();
-        console.log('fine')
     }
     else {
-        onLogOut()
-        
+        onLogOut();    
     }
-    
     try {   
             gapi.load('auth2', function() {
             auth2 = gapi.auth2.init({
-                client_id: clientId,
+                client_id: clientId_google,
                 prompt: 'select_account',
-                scope: scope
-                
+                scope: scope           
             }).then(function() {
 
                 GoogleAuth = gapi.auth2.getAuthInstance();
                 const authBt = document.getElementById('googleDrive')
                 const signOutBtn = document.getElementById('googleDriveOff');
                 const pickerBtn = document.getElementById('googlePicker')
-                if (GoogleAuth.currentUser.get().Ca === null)
-                    onLogOut();
-                else onSingIn();
-                    onAuthApiLoad();
+                /*if (getCookie('auth') === null){
+                    onSingIn();
+
+                }
+                else onLogOut(); */
+                onAuthApiLoad();
+
+                    
                 
             });
         });
@@ -127,23 +186,41 @@ window.onApiLoad = function() {
 }
 
 function onAuthApiLoad() {
+    access_token = getCookie("access_token");
+    
+    if(getCookie('auth')) {
+        if(getCookie('auth') === 'google'){
+            service = new Google();
+        }
+        else if(getCookie('auth') === 'dropbox'){
+           service = new Dropbox();
+        }
+        else if(getCookie('auth') === 'yandex'){
+           service = new Yandex();
+        }
+       service.get_settings_from_file();
+       service.getFolder(); 
+    }
+    if(!getCookie('folder_id')){
 
-    access_token = getCookie("access_token")
+    }
     const authBt = document.getElementById('googleDrive');
     const signOutBtn = document.getElementById('googleDriveOff');
     const pickerBtn = document.getElementById('googlePicker');
     const errorBtn = document.getElementById('folder_error_button');
     //console.log(GoogleAuth.currentUser.get())
     const bookPicker = document.getElementById("books");
-    try {
+/*    try {
 
         access_token =  GoogleAuth.currentUser.get().uc.access_token;
     }
     catch(err){
         
-    }
+    }*/
+    
     authBt.addEventListener('click', function() {
-        if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+        if (!getCookie('auth')) {
+
             GoogleAuth.grantOfflineAccess({
                 prompt: 'select_account', //select_account, consent
                 scope: scope
@@ -154,68 +231,47 @@ function onAuthApiLoad() {
                     googleUser = GoogleAuth.currentUser.get();
                     googleUser.reloadAuthResponse().then(
                         function(authResponse) {
-
-                            //signOutBtn.classList.remove("invisible");
                             access_token = authResponse.access_token;
                             document.cookie = 'access_token='+access_token;
-                            getFolder(); // при нажатии на кнопку авторизации начинается поиск папки на гугл диске
-                            /*setTimeout(() => {
-                                if (folder_id === 'err' || folder_id === undefined){
-                                     document.cookie = 'folder_id=no_folder';
-                                     console.log(getCookie('folder_id'))
-                                 }
-                                else{
-                                    document.cookie = 'folder_id='+folder_id;
-                                    console.log(getCookie('folder_id'))
-                                }
-                            }, 1000)*/
-                    
-                            //createPicker(authResponse);
+                            service = new Google();
+                            service.get_settings_from_file();
+                            service.getFolder(); // при нажатии на кнопку авторизации начинается поиск папки на гугл диске
+                            if(getCookie('current_book')) {
+                                service.getBook(getCookie('current_book'), false);
+                            }
+                            else {
+                                show_libary();
+                            }
                         }
                     );
                 }
             );
             
-        } else {
-            //reloadUserAuth();
-        }
+        } 
         
     });
 
     signOutBtn.addEventListener('click', function() {
-        //console.log("singed_out");
         GoogleAuth.signOut();
         onLogOut();
-        deleteCookie("folder_id");
+        //deleteCookie("folder_id");
+
     });
 
 
     pickerBtn.addEventListener('click', function() {
-        /*googleUser = GoogleAuth.currentUser.get();
-        googleUser.reloadAuthResponse().then(
-            function(authResponse) {
-                access_token = authResponse.access_token;
-
-            }
-        );*/
-        var id_folder = getCookie('folder_id');
-        if (id_folder === 'no_folder') { //путь до папки записан в куки
-            // добавить чек для куки
-
-            // скрыввать класс итем после нахождения либо не нахождения папки
-            //
-            // 
-            folderNotFound();
-        }
-        else {
-            getFilesFromFolder();
-        }
+        deleteCookie('current_book');
+        delete settings['current_book'];
+        service.write_in_settings();
+        show_libary();
+        
     });
     errorBtn.addEventListener('click', function() {
-        getFolder(); // при нажатии на кнопку авторизации начинается поиск папки на гугл диске
+        service.getFolder(); // при нажатии на кнопку авторизации начинается поиск папки на гугл диске
         setTimeout(() => {
             if (folder_id === 'err' || folder_id === undefined){
                 document.cookie = 'folder_id=no_folder';
+               
                 var block = document.getElementById('folder_error_button')
                 block.innerHTML = 'Папка по прежнему не найдена';
              }
@@ -229,137 +285,25 @@ function onAuthApiLoad() {
             }
         }, 1000)
     });
-/*    bookPicker.addEventListener('click', function() {
-        let target = event.target; // где был клик?
-          console.log(target); // подсветить TD
-    });*/
-}
-
-function reloadUserAuth() {
-
-    googleUser = GoogleAuth.currentUser.get();
-    googleUser.reloadAuthResponse().then(
-        function(authResponse) {
-            //signOutBtn.classList.remove("invisible");
-            access_token = authResponse.access_token;
-            createPicker(authResponse);
+        
+    if(getCookie('current_book')) {
+        console.log('1')
+        service.getBook(getCookie('current_book'), true);
         }
-    );
-}
-
-function createPicker(authResult) {
-    
-    if (authResult && !authResult.error) {
-
-        gapi.load('picker', function() {
-            const picker = new google.picker.PickerBuilder().
-            enableFeature(google.picker.Feature.MULTISELECT_ENABLED).
-            addView(new google.picker.DocsView(google.picker.ViewId.DOCS).
-                setIncludeFolders(true).
-                setParent(getCookie("folder_id")).
-                setSelectFolderEnabled(true)
-                    ).
-            setOAuthToken(access_token).
-            setDeveloperKey(developerKey).
-            setCallback(pickerCallback).
-            build();
-            picker.setVisible(true);
-        });
-    }
-}
-
-async function pickerCallback(_data) {
-    console.log(_data);
-    if(_data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
-        getBook(_data[google.picker.Response.DOCUMENTS][0]);
-
-    }
-}
-
-
-
-async function getBook(data){
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "https://www.googleapis.com/drive/v3/files/"+data+'?alt=media', true);
-    xhr.setRequestHeader('Authorization','Bearer '+ access_token);
-    xhr.onload = function(){
-
-        let parser = new DOMParser();
-        let xmlDOM = parser.parseFromString(xhr.responseText, 'application/xml')
-        author = xmlDOM.getElementsByTagName('author')[0];
-        author_str = '' + author.getElementsByTagName('first-name')[0].innerHTML + " ";
-        author_str += author.getElementsByTagName('middle-name')[0].innerHTML + " ";
-        author_str += author.getElementsByTagName('last-name')[0].innerHTML;
-
-        title = xmlDOM.getElementsByTagName('book-title')[0].innerHTML;
-
-        content = xmlDOM.getElementsByTagName('body')[0].innerHTML;
-        books_list.push(new Book(author_str, title, content, data));
-        elem = document.getElementById('libary');
-        elem.classList.remove('invisible');
-        let li = document.createElement('li');
-        li.className = 'book-wrapper';
-        li.id = data;
-        li.onclick = function(id){
-            let target = event.target;
-            for (var i = 0; i < id.path.length; i++) {
-                if(id.path[i].nodeName == 'LI'){
-                    for(var j = 0; j < books_list.length; j++) {
-                        if(books_list[j].get(id.path[i].id) === true) {
-                            books_list[j].show();
-                        }
-                    }
-                    return;
-                }
-            }
-        };
-        var your_binary_data = xmlDOM.getElementsByTagName("binary")[0].innerHTML; // parse text data to URI format
-        img = 'data:image/jpeg;base64,' + your_binary_data;
-        li.innerHTML = '<img src = "'+ img + '"><p class="author">' + author_str + ' </p><p class="title"> '+ title +' </p>';
-        elem.append(li);
-        load_circle.classList.add('invisible');
-    }
-    xhr.send();
-    
-}
-
-
-
-function getFolder(){
-    load_circle = document.getElementById("loader");
-    load_circle.classList.remove('invisible');
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET",'https://www.googleapis.com/drive/v3/files', true);
-    xhr.setRequestHeader('Authorization','Bearer '+ access_token);
-    xhr.onload = function() { 
-        var str = JSON.parse(xhr.responseText);
-        files = str.files;
-        for(var i = 0; i < files.length; i++) {
-           if (files[i].name ==='books' && files[i].mimeType === "application/vnd.google-apps.folder") {
-                folder_id = files[i].id;
-                document.cookie = 'folder_id='+folder_id;
-                
-                load_circle.classList.add('invisible');
-                onSingIn();
-                return;
-           }
+        else {
+            show_libary();
         }
-        load_circle = document.getElementById("loader");
-        load_circle.classList.add('invisible');
-        onSingIn();
-        folderNotFound();
-    }
-    xhr.send();
 
 }
+
 
 function getCookie ( cookie_name )
 {
   var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
  
-  if ( results )
+  if ( results ){
     return ( unescape ( results[2] ) );
+    }
   else
     return null;
 }
@@ -371,63 +315,143 @@ function deleteCookie ( cookie_name )
   document.cookie = cookie_name += "=; expires=" + cookie_date.toGMTString();
 }
 
-function getFilesFromFolder() {
-    load_circle = document.getElementById("loader");
-    load_circle.classList.remove('invisible');
-    if(books_list.length > 0){
-        console.log('wtf')
-        lib = document.getElementById('libary');
-        lib.classList.remove('invisible');
-        var book = document.getElementsByClassName('book-field')[0];
-        book.classList.add('invisible');
-        load_circle.classList.add('invisible');
-
-    }
-    else {
-
-        var xhr = new XMLHttpRequest();
-        console.log(access_token);
-        xhr.open("GET","https://www.googleapis.com/drive/v3/files?q='" + getCookie("folder_id") + "'+in+parents&key="+ developerKey+"", true);
-        xhr.setRequestHeader('Authorization','Bearer '+ access_token);
-        xhr.onload = function() { 
-            console.log(xhr.responseText);
-            getListOfBooks(xhr.responseText);
-
-        }
-        xhr.send();
-    }
-
-
+async function update_settings(name, value) {
+    settings[name] = value;
+    console.log(settings);
+    service.write_in_settings();
 }
 
+
 function folderNotFound() {
-    console.log('wtf');
     var block = document.getElementById('folder_error')
     block.classList.remove("invisible");
     var block = document.getElementById("folder_error_button");
     block.classList.remove("invisible");
 }
 
-function getListOfBooks(response){
-    var text = JSON.parse(response);
-    for(var i = 0; i < text.files.length; i++) {
-        if (text.files[i].mimeType === 'text/xml') {
+
+
+async function add_another_version() {
+    var book_field = document.getElementsByClassName('book-field')[0];
+    var id = book_field.id;
+}
+
+function show_book_info() {
+    var show_block = document.getElementById('book_info');
+    show_block.classList.toggle("invisible");
+    var elem = document.getElementsByClassName('book-field')[0];
+    var cur_book = elem.id;
+    if(getCookie('another_version_of:' + cur_book)) {
+        var version_info = document.getElementById('version_info');
+        var book_id = getCookie('another_version_of:' + cur_book);
+        version_info.classList.remove('invisible');
+/*        console.log(cur_book + ' ' + book_id);*/
+        book_num = get_book_by_id(book_id);
+        show_book_preview(book_num, 'show_another_version')
+
+    } else {
+
+        var elem = document.getElementById('show_another_version');
+        elem.innerHTML = '';
+        var elem2 = document.getElementById('version_info');
+        elem2.classList.add('invisible');
+        active_cursor();
+    }
+}
+
+
+function check_auth() {
+    var cur_href = window.location.href;
+    var str = cur_href.split('?');
+    if(str.length > 1) {
+        var splitted = str[1];
+        var web = str[0];
+        console.log(str[0]);
+        code = splitted.split('=')[1];
+        if(splitted.includes('code=') && !getCookie('auth')){
+            if(!splitted.includes('-')){
+                var xhr = new XMLHttpRequest();
+                var url = 'https://oauth.yandex.ru/token';
+                body = "grant_type=authorization_code&code="+code +'&client_id=50e4c045cf91424d89bab8c634df41d5&client_secret=5b018bda88834af38c9447864800d286';
+                xhr.open("POST", url, true);
+                xhr.onload = function() {
+                    if(xhr.status === 200) {
+                        var str = JSON.parse(xhr.responseText);
+
+                        document.cookie='access_token=' + str['access_token'];
+                        document.cookie='auth=yandex';
+                        location.href = web;
+                        location.hash = web;
+                    }
+                    else {
+                        console.log(xhr.response)
+                    }
+                }
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.send(body);
+            }
+            else {
+                body = "code="+code+"&grant_type=authorization_code&redirect_uri=http://localhost:3000/";
+                var xhr = new XMLHttpRequest();
+                var url = 'https://api.dropboxapi.com/oauth2/token';
+                xhr.open("POST", url, true);
+                xhr.onload = function() {
+                    if(xhr.status === 200) {
+                        var str = JSON.parse(xhr.responseText);
+                        document.cookie='access_token=' + str['access_token'];
+                        document.cookie='auth=dropbox';
+                        location.href = web;
+                        location.hash = web;
+                    }
+                    else {
+                        console.log(xhr.response)
+                    }
+                }
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.setRequestHeader("Authorization", "Basic NDJlNmQ3NnM0cTk4cWYxOmFseXMybjV4b3IyN29mMg==");
+                xhr.send(body);
+            }
             
-            getBook(text.files[i].id);
-        } 
+        }
     }
 
 }
 
-function doStopper() {
-    var book_id = document.getElementsByClassName('book-field')[0];
-    document.cookie = book_id.id +'='+pageYOffset;
+function show_book_preview(id, block) {
+    console.log(books_list[id]);
+    var elem = document.getElementById(block);
+    var change_book_version = document.getElementById('change_book_version');
+    elem.innerHTML = '';
+    let li = document.createElement('li');
+    li.className = 'book-wrapper list';
+    var author_str = books_list[id].author;
+    var title = books_list[id].title;
+    var img = books_list[id].img;
+    var str = '<div class = "img-wrapper list-img-wrapper"><img src = "'+ img + '"></div><p class="author">';
+    str +=  author_str + ' </p><p class="title"> '+ title;
+    str += ' <i class="fa fa-times" aria-hidden="true" onclick = "remove_book_version()"></i></p> '
+    li.innerHTML = str;
+    elem.append(li);
+    change_book_version.classList.add('invisible');
 }
 
 
+function remove_book_version(){
+    var book_field = document.getElementsByClassName('book-field')[0];
+    var change_book_version = document.getElementById('change_book_version');
+    var id = book_field.id;
+    change_book_version.classList.remove('invisible')
+    deleteCookie('another_version_of:' + id);
+    var show_block = document.getElementById('book_info');
+    show_block.classList.toggle("invisible");
+    show_book_info();
+}
 
 
-// 2 страницы
-// для авторизованных пользователей
-
-//https://docs.google.com/picker/pvr?hl=en_US&oauth_token=ya29.A0AfH6SMA0_3KwrlqzJ1q8m4ajMxZimsJpxB2eOcLaO3DwleU8eEvEMHcy5vqiIWju8QesKgWWaHPPmAcaMzT7H6ScpRcQ2d57gvonhrJdbqahw1KesZqGUcvBj8x3YC7I6g2HRcl-SbFoWbGJZpljaHo-D56A4A&hostId=localhost&xtoken=AL7Jy1w7vg98qW2F5SSH7lq3s0D71CPTwQ:1614120487533
+function get_book_by_id(id){
+    for(var i = 0 ; i < books_list.length; i++) {
+        if(books_list[i].get(id))
+            return i;
+    }
+    return null;
+}
