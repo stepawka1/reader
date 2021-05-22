@@ -18,9 +18,9 @@
 	    <ul>
 	        <li><a id = 'googlePicker' onclick='show_main()' >Каталог</a></li>
 	        <li ><a onclick='show_settings()'>Настройка</a></li>
-	        <li onclick="active_cursor()"><a id = 'translate_page'>Другая версия книги</a></li>
+	        <li  onclick="translate_book()"><a id = 'translate_page'>Другая версия книги</a></li>
 	        <li><a id = 'googleDriveOff'>Выйти</a></li>
-	        <li onclick="show_book_info()"> <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i> </li>
+	        <li onclick="show_book_info()" id = 'info_icon'> <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i> </li>
 	    </ul>
 	  </div>
 
@@ -168,9 +168,13 @@
 
 	<div id = 'book_info' class="invisible" > 
 		<h1> Информация</h1>
-		<label>Добавить другую версию книги</label>
-		<ul class="drop-down" id="anoter_book_version"><li class="show_drop_down" id="changer_dropdown" value ='asdsad'> Выбрать книгу на другом языке <i class="fa fa-arrow-down" aria-hidden="true"></i> </li></ul>
-
+		<h1 id ='version_info'> Альтернативная версия книги: <ul id = 'show_another_version'></ul></h1>
+		<div id = 'change_book_version'> 
+			<label>Добавить другую версию книги <i class="fa fa-refresh" aria-hidden="true" onclick="active_cursor()"></i></label> 
+			<ul class="drop-down" id="anoter_book_version">
+				<li class="show_drop_down" id="changer_dropdown" > Выбрать книгу на другом языке <i class="fa fa-arrow-down" aria-hidden="true"></i> </li>
+			</ul>
+		</div>
 	</div>
 	
 	<script type="text/javascript" src ='https://apis.google.com/js/api.js?onload=onApiLoad' ></script>
